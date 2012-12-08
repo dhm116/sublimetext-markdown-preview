@@ -106,7 +106,13 @@ class MarkdownPreviewCommand(sublime_plugin.TextCommand):
                 sublime.status_message('converted markdown with github API successfully')
         else:
             # convert the markdown
+            toc_markers = ['[toc]', '[TOC]', '<!--TOC-->']
             markdown_html = markdown2.markdown(contents, extras=['footnotes', 'toc', 'fenced-code-blocks', 'cuddled-lists', 'code-friendly'])
+            toc_html = markdown_html.toc_html
+
+            if toc_html:
+                for marker in toc_markers:
+                    markdown_html = markdown_html.replace(marker, toc_html)
             # postprocess the html
             markdown_html = self.postprocessor(markdown_html)
 
